@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Параллакс</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 200vh; /* Для длинной страницы, чтобы можно было прокручивать */
+            overflow-x: hidden;
+        }
+
+        .parallax-container {
+            height: 100vh;
+            background: url('backgroun2.jpg') center/cover fixed no-repeat; /* Замените 'background.jpg' на ваше изображение */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-container" id="parallax">
+        Параллакс Эффект
+    </div>
+
+    <script src="1.js"></script>
+</body>
+</html>

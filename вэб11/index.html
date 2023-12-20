@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина с товарами</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Просто стилизация для удобства */
+    button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Кнопки для управления корзиной -->
+<button onclick="addItem()">Добавить товар</button>
+<button onclick="changeItem()">Изменить товар</button>
+<button onclick="clearCart()">Очистить корзину</button>
+<!-- <button onclick="showCart()">Показать корзину</button> -->
+
+<!-- Форма для ввода значений a и b для фильтрации -->
+<h2>Введите значения для фильтрации:</h2>
+<label for="inputA">Значение A:</label>
+<input type="number" id="inputA" required>
+<label for="inputB">Значение B:</label>
+<input type="number" id="inputB" required>
+<button onclick="filterAndDisplay()">Фильтровать</button>
+
+<!-- Кнопки для сортировки -->
+<h2>Сортировка:</h2>
+<button onclick="sortAscending()">Сортировать по возрастанию</button>
+<button onclick="sortDescending()">Сортировать по убыванию</button>
+
+<!-- Место для вывода информации о корзине -->
+<div id="cart"></div>
+
+<!-- Место для вывода результатов фильтрации -->
+<div id="filterResult"></div>
+
+<script>
+  // Инициализация массива корзины
+  let card = [];
+
+  // Функция для добавления товара в корзину
+  function addItem() {
+    const newItem = prompt('Введите название товара:');
+    const quantity = parseInt(prompt('Введите количество товара:')) || 1;
+
+    if (newItem && quantity > 0) {
+      const existingItemIndex = card.findIndex(item => item.name === newItem);
+
+      if (existingItemIndex !== -1) {
+        // Уже существует, увеличиваем количество
+        card[existingItemIndex].quantity += quantity;
+      } else {
+        // Новый товар
+        card.push({ name: newItem, quantity: quantity });
+      }
+
+      showCart();
+    }
+  }
+
+  // Функция для изменения товара в корзине
+  function changeItem() {
+    const index = prompt('Введите индекс товара для изменения:');
+    
+    if (index !== null && index >= 0 && index < card.length) {
+      const newName = prompt('Введите новое название товара:');
+      const newQuantity = parseInt(prompt('Введите новое количество товара:')) || 1;
+
+      if (newName && newQuantity > 0) {
+        card[index].name = newName;
+        card[index].quantity = newQuantity;
+        showCart();
+      } else {
+        alert('Введите корректные данные для названия и количества товара.');
+      }
+    }
+  }
+
+
+  // Функция для очистки корзины
+  function clearCart() {
+    card = [];
+    showCart();
+  }
+
+  // Функция для отображения содержимого корзины
+  function showCart() {
+    const cartElement = document.getElementById('cart');
+    cartElement.innerHTML = '<h2>Корзина:</h2>';
+
+    let totalCost = 0;
+
+    if (card.length === 0) {
+      cartElement.innerHTML += '<p>Корзина пуста.</p>';
+    } else {
+      card.forEach((item, index) => {
+        const itemCost = item.quantity * 10; // Здесь вы можете использовать реальные данные о цене
+        totalCost += itemCost;
+
+        cartElement.innerHTML += `
+          <p>
+            ${index + 1}. ${item.name} 
+            <button onclick="decreaseQuantity(${index})">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="increaseQuantity(${index})">+</button>
+            <button onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></button> 
+            Стоимость: ${itemCost}
+          </p>
+        `;
+      });
+
+      cartElement.innerHTML += `<p>Итоговая стоимость: ${totalCost}</p>`;
+    }
+  }
+
+  // Функция для удаления товара из корзины
+  function removeItem(index) {
+    card.splice(index, 1);
+    showCart();
+  }
+
+  // Функция для уменьшения количества товара
+  function decreaseQuantity(index) {
+    if (card[index].quantity > 1) {
+      card[index].quantity--;
+      showCart();
+    }
+  }
+
+  // Функция для увеличения количества товара
+  function increaseQuantity(index) {
+    card[index].quantity++;
+    showCart();
+  }
+
+  // Функция для фильтрации массива товаров
+  function filterProducts(arr, a, b) {
+    return arr.filter((product, index) => index >= a && index <= b);
+  }
+
+  // Функция для фильтрации и отображения результатов
+  function filterAndDisplay() {
+    // Показываем текущую корзину
+    showCart();
+
+    const inputA = parseFloat(document.getElementById('inputA').value);
+    const inputB = parseFloat(document.getElementById('inputB').value);
+
+    // Вызываем функцию фильтрации для массива товаров
+    const filteredProducts = filterProducts(card, inputA, inputB);
+
+    // Отображаем результат
+    const resultElement = document.getElementById('filterResult');
+    resultElement.innerHTML = '<h2>Результат фильтрации:</h2>';
+
+    if (filteredProducts.length > 0) {
+      filteredProducts.forEach((item, index) => {
+        const itemCost = item.quantity * 10; // Цена
+
+        resultElement.innerHTML += `
+          <p>
+            ${index + 1}. ${item.name} 
+            <button onclick="decreaseQuantity(${index})">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="increaseQuantity(${index})">+</button>
+            <button onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></button> 
+            Стоимость: ${itemCost}
+          </p>
+        `;
+      });
+
+      const totalCost = filteredProducts.reduce((acc, item) => acc + item.quantity * 10, 0);
+      resultElement.innerHTML += `<p>Итоговая стоимость: ${totalCost}</p>`;
+    } else {
+      resultElement.innerHTML += 'Нет товаров для отображения';
+    }
+  }
+
+  // Функция для сортировки по возрастанию
+  function sortAscending() {
+    card.sort((a, b) => a.quantity - b.quantity);
+    showCart();
+  }
+
+  // Функция для сортировки по убыванию
+  function sortDescending() {
+    card.sort((a, b) => b.quantity - a.quantity);
+    showCart();
+  }
+
+  showCart(); // Перемещаем вызов функции showCart() в конец
+</script>
+
+</body>
+</html>

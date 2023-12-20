@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создание списка</title>
+</head>
+<body>
+
+  <ul id="myList"></ul>
+  <button onclick="createList()">Добавить новый пункт</button>
+
+  <script>
+    function createList() {
+      const list = document.getElementById('myList');
+      let itemContent;
+
+      do {
+        itemContent = prompt('Введите содержимое для нового пункта списка:');
+        if (itemContent !== null && itemContent.trim() !== '') {
+          const listItem = document.createElement('li');
+          listItem.textContent = itemContent;
+          list.appendChild(listItem);
+        }
+      } while (itemContent !== null && itemContent.trim() !== '');
+    }
+
+    // Вызываем функцию при загрузке страницы
+    createList();
+  </script>
+</body>
+</html>

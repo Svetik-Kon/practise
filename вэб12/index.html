@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Уведомления</title>
+  <style>
+    .notification {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    #allNotificationsContainer {
+      display: none; /* Изначально скрываем контейнер для всех уведомлений */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="notificationContainer"></div>
+  <p id="notificationCounter">Количество уведомлений: 0</p>
+  <button onclick="toggleNotifications()">Остановить уведомления</button>
+  <button onclick="showAllNotifications()">Показать все уведомления</button>
+  <button onclick="hideAllNotifications()">Скрыть список уведомлений</button>
+
+  <div id="allNotificationsContainer"></div>
+
+  <script>
+    let notificationCounter = 0;
+    let notificationInterval;
+    let notifications = [];
+    let stopNotificationsFlag = false;
+
+    function showNotification() {
+      if (stopNotificationsFlag) {
+        return; // Прекращаем генерацию, если флаг установлен в true
+      }
+
+      notificationCounter++;
+      const notificationContainer = document.getElementById('notificationContainer');
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = `Новое уведомление ${notificationCounter}`;
+      notificationContainer.appendChild(notification);
+
+      // Добавляем уведомление в массив
+      notifications.push(notification.textContent);
+
+      // Автоматически исчезнет через 7 секунд
+      setTimeout(() => {
+        notification.remove();
+        updateNotificationCounter();
+      }, 7000);
+    }
+
+    function updateNotificationCounter() {
+      const counterElement = document.getElementById('notificationCounter');
+      counterElement.textContent = `Количество уведомлений: ${notificationCounter}`;
+    }
+
+    function startNotificationInterval() {
+      notificationInterval = setInterval(() => {
+        showNotification();
+      }, 3000);
+    }
+
+    function stopNotifications() {
+      clearInterval(notificationInterval);
+      setTimeout(() => {
+        startNotificationInterval();
+        stopNotificationsFlag = false; // Сбрасываем флаг
+      }, 10000);
+    }
+
+    function toggleNotifications() {
+      if (stopNotificationsFlag) {
+        startNotificationInterval();
+        stopNotificationsFlag = false; // Сбрасываем флаг
+      } else {
+        stopNotifications();
+        stopNotificationsFlag = true; // Устанавливаем флаг
+      }
+    }
+
+    function showAllNotifications() {
+      const allNotificationsContainer = document.getElementById('allNotificationsContainer');
+      // Очищаем предыдущий список перед отображением
+      allNotificationsContainer.innerHTML = '';
+
+      // Показываем все уведомления из массива
+      notifications.forEach((text, index) => {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = text;
+        allNotificationsContainer.appendChild(notification);
+      });
+
+      // Показываем контейнер для всех уведомлений
+      allNotificationsContainer.style.display = 'block';
+    }
+
+    function hideAllNotifications() {
+      const allNotificationsContainer = document.getElementById('allNotificationsContainer');
+      // Скрываем контейнер для всех уведомлений
+      allNotificationsContainer.style.display = 'none';
+    }
+
+    // Запускаем первый раз в начале
+    startNotificationInterval();
+  </script>
+</body>
+</html>

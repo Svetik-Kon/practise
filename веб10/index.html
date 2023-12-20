@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            max-width: 200px;
+        }
+    </style>
+    <style>
+        /* Просто стилизация для удобства */
+        button {
+          margin: 5px;
+        }
+      </style>
+</head>
+<body>
+
+    <h1>Корзина</h1>
+    
+    <p>Текущее значение в корзине: <span id="cartValue">0</span></p>
+    <button onclick="addToCart()">Добавить в корзину</button>
+
+    <script src="script.js" type="text/javascript"></script>
+
+    
+    <h1>Карточки с текстом</h1>
+    
+    <div class="card" id="card1">
+        <h2>Заголовок 1</h2>
+        <p>
+            Это очень длинный текст, который нужно усечь с использованием функции truncate.
+            Функция должна проверять длину строки и, если она превосходит определенное значение,
+            усекать ее и добавлять многоточие.
+        </p>
+        <button onclick="truncateText('card1')">Сократить текст</button>
+    </div>
+
+    <div class="card" id="card2">
+        <h2>Заголовок 2</h2>
+        <p>
+            Короткий текст без необходимости усечения.
+        </p>
+        <button onclick="truncateText('card2')">Сократить текст</button>
+    </div>
+
+    <button onclick="addItem()">Добавить товар</button>
+<button onclick="changeItem()">Изменить товар</button>
+<button onclick="clearCart()">Очистить корзину</button>
+<button onclick="showCart()">Показать корзину</button>
+
+<!-- Место для вывода информации о корзине -->
+<div id="cart"></div>
+
+
+    <script>
+        function truncate(str, maxlength) {
+            if (str.length > maxlength) {
+                return str.slice(0, maxlength - 1) + '…';
+            } else {
+                return str;
+            }
+        }
+
+        function truncateText(cardId) {
+            let card = document.getElementById(cardId);
+            let title = card.querySelector('h2').innerText;
+            let text = card.querySelector('p').innerText;
+
+            // Выбираем максимальную длину для сокращения (в данном примере 50 символов)
+            let maxLength = 50;
+
+            card.querySelector('h2').innerText = truncate(title, maxLength);
+            card.querySelector('p').innerText = truncate(text, maxLength);
+        }
+    </script>
+
+<script>
+    // Инициализация массива корзины
+    let cart = [];
+  
+    // Функция для добавления товара в корзину
+    function addItem() {
+      const newItem = prompt('Введите название товара:');
+      if (newItem) {
+        cart.push(newItem);
+        showCart();
+      }
+    }
+  
+    // Функция для изменения товара в корзине
+    function changeItem() {
+      const index = prompt('Введите индекс товара для изменения:');
+      const newItem = prompt('Введите новое название товара:');
+      if (index !== null && newItem !== null && index >= 0 && index < cart.length) {
+        cart[index] = newItem;
+        showCart();
+      }
+    }
+  
+    // Функция для очистки корзины
+    function clearCart() {
+      cart = [];
+      showCart();
+    }
+  
+    // Функция для отображения содержимого корзины
+    function showCart() {
+      const cartElement = document.getElementById('cart');
+      cartElement.innerHTML = '<h2>Корзина:</h2>';
+      if (cart.length === 0) {
+        cartElement.innerHTML += '<p>Корзина пуста.</p>';
+      } else {
+        cart.forEach((item, index) => {
+          cartElement.innerHTML += `<p>${index + 1}. ${item}</p>`;
+        });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Позиционирование картинки</title>
+  <style>
+    #imageContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #output {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="imageContainer">
+    <img src="C:\Users\sveti\Desktop\вэб12\рандом.jfif" alt="Картинка" id="myImage">
+  </div>
+
+  <div id="output"></div>
+
+  <script>
+    const imageContainer = document.getElementById('imageContainer');
+    const output = document.getElementById('output');
+    const myImage = document.getElementById('myImage');
+
+    imageContainer.addEventListener('click', (event) => {
+      const x = event.clientX - imageContainer.getBoundingClientRect().left;
+      const y = event.clientY - imageContainer.getBoundingClientRect().top;
+
+      output.textContent = `Координаты клика: x=${x}, y=${y}`;
+    });
+  </script>
+</body>
+</html>
